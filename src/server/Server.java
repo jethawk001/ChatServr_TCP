@@ -5,12 +5,13 @@ import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Logger;
 
 public class Server
 {
-	final static Logger logger = Logger.getLogger(Server.class.getName());
-	private static ExecutorService threadPool = Executors.newFixedThreadPool(4);
+	private final static Logger logger = Logger.getLogger(Server.class.getName());
+	private static ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
 	
 	private static boolean configureServer(String[] args) throws FileNotFoundException
 	{
@@ -26,6 +27,13 @@ public class Server
 	public static void submitThread(Thread thread)
 	{
 		threadPool.execute(thread);
+	}
+	
+
+	public static void idle()
+	{
+		logger.info("Idle");
+		logger.info("threadPool " + threadPool.toString());
 	}
 	
 	public static void main(String[] args)
@@ -66,4 +74,5 @@ public class Server
 
 		x.close();
 	}
+
 }

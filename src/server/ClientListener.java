@@ -49,6 +49,11 @@ public class ClientListener implements Runnable
 		
 		this.shutdown = true;
 	}
+	
+	private void idle()
+	{
+		Server.idle();
+	}
 
 	@Override
 	public void run()
@@ -96,6 +101,7 @@ public class ClientListener implements Runnable
 				{
 					// we just woke up on a timeout
 					// go back to the while
+					idle();
 				}
 			}
 
