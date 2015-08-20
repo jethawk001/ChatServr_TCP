@@ -1,0 +1,8 @@
+Folder structure
+--> src/client: client application (to be done yet)
+--> src/server: server application
+
+Usage
+(1) run server (currently uses 9094 port for listening)
+(2) telnet to 9094 from terminal
+(3) to shutdown server -> press any key on the server terminal
