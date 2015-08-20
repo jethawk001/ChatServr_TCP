@@ -2,10 +2,9 @@ package server;
 
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class Server
@@ -36,7 +35,7 @@ public class Server
 		logger.info("threadPool " + threadPool.toString());
 	}
 	
-	public static void main(String[] args)
+	public static void main(String[] args) throws InterruptedException
 	{
 		// Configure and initialization
 		boolean configured = false;
@@ -70,7 +69,8 @@ public class Server
 		System.out.println("Got a keypress on console. Shutting down...");
 		clientListener.shutdown(); // shutdown client listener - clean exit for client listener
 		
-		threadPool.shutdownNow();
+		threadPool.shutdown();
+		threadPool.awaitTermination(5000, TimeUnit.MILLISECONDS);
 
 		x.close();
 	}

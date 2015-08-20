@@ -1,8 +1,9 @@
 Folder structure
---> src/client: client application (to be done yet)
+--> src/client: client application
 --> src/server: server application
 
 Usage
-(1) run server (currently uses 9094 port for listening)
-(2) telnet to 9094 from terminal
+(1) run server from bin folder (java server/Server) - listens on port 9094
+(2) run client from bin folder (java client/Client localhost 9094)
 (3) to shutdown server -> press any key on the server terminal
+(4) to shutdown client -> close window OR type "bye" after logging in (will have to close window manually)

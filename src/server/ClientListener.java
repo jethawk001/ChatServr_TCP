@@ -110,6 +110,8 @@ public class ClientListener implements Runnable
 			e.printStackTrace();
 		} finally
 		{
+			
+			Server.getLogger().info("Shutting down listener and socket...");
 			try
 			{
 				if (socket != null)

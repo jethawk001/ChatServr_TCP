@@ -25,42 +25,52 @@ public class ClientHandler implements Runnable
 	BufferedReader reader;
 	PrintWriter writer;
 
-	public ClientHandler(Socket socket)
+	public ClientHandler(Socket s)
 	{
-		this.socket = socket;
-		this.localPortConnection = socket.getLocalPort();
+		socket = s;
+		localPortConnection = socket.getPort();
+		
+		// initially add the client in this map with its port number
+		// we will change this mapping to client's user name once we
+		// have it
+		clientLoginNameMap.put(Integer.toString(localPortConnection), this);
 	}
 	
-	private void getUserName() throws IOException
+	private void getUserName() throws Exception
 	{
 		// Let the user know all the people logged in
 		writer.println("Existing users logged in...");
 		for (Entry<String, ClientHandler> s : clientLoginNameMap.entrySet())
 		{
-			writer.println(s.getKey());
+			if(!s.getKey().trim().equals("") && s.getValue() != this)
+				writer.println(s.getKey());
 		}
 		writer.flush();
 
 
 		// ask user for his/her login name
 		String loginName = "";
-
+		
 		// Ensure that the client provides a valid login name to start a
 		// chat
 		while (loginName.trim() == "" || 
 				clientLoginNameMap.putIfAbsent(loginName, this) != null /* no one else used the login name */ )
 		{
 			writer.flush();
-			writer.print("Enter your chat user name (not taken by anyone):");
+			writer.println("Enter your chat user name (not taken by anyone):");
 			writer.flush();
 			loginName = reader.readLine();
+			
+			if(loginName == null)
+				throw(new Exception("read null loginName"));
 		}
 
 		// At this point client has a valid login name
 		// now add him to the map
-		this.clientLoginName = loginName;
+		clientLoginNameMap.remove(Integer.toString(localPortConnection));
+		clientLoginName = loginName;
 		
-		writer.print(loginName + " you can start chatting now.");
+		writer.println(loginName + " you can start chatting now.");
 		writer.flush();
 	}
 	
@@ -108,6 +118,8 @@ public class ClientHandler implements Runnable
 			
 			handle.writer.println("Server shutting down - GoodBye");
 			handle.writer.flush();
+			handle.socket.shutdownInput();
+			handle.socket.shutdownOutput();
 			handle.socket.close();
 		}
 		
@@ -125,9 +137,18 @@ public class ClientHandler implements Runnable
 			writer.println("Welcome to chat server..");
 			writer.flush();
 
-			getUserName();
+			try
+			{
+				getUserName();
+			}
+			catch (Exception e)
+			{
+				//this might happen because the client was disconnected before getting a user name
+				clientLoginNameMap.remove(localPortConnection);
+				return;
+			}
 			
-			announceUserState(this.clientLoginName, true);
+			announceUserState(clientLoginName, true);
 			
 			giveInstructions();
 			
@@ -186,8 +207,7 @@ public class ClientHandler implements Runnable
 
 		} catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Server.getLogger().severe(e.getMessage());
 		}
 	}
 }
