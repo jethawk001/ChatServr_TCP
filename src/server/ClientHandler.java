@@ -53,9 +53,11 @@ public class ClientHandler implements Runnable
 		
 		// Ensure that the client provides a valid login name to start a
 		// chat
-		while (loginName.trim() == "" || 
-				clientLoginNameMap.putIfAbsent(loginName, this) != null /* no one else used the login name */ )
+		while (loginName.trim() == "" || loginName.contains("/") || clientLoginNameMap.putIfAbsent(loginName, this) != null /* no one else used the login name */ )
 		{
+			if(loginName.contains("/"))
+				writer.println("Enter your chat user name (cannot contain character \"/\"):");
+			
 			writer.flush();
 			writer.println("Enter your chat user name (not taken by anyone):");
 			writer.flush();

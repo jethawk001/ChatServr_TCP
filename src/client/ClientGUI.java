@@ -1,6 +1,7 @@
 package client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.TextArea;
 import java.awt.TextField;
@@ -10,6 +11,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientGUI extends Frame
 {
@@ -43,6 +47,15 @@ public class ClientGUI extends Frame
 		pack();
 		setVisible(true);
 		inText.requestFocus();
+		
+		List<Color> l = new ArrayList<Color>(Arrays.asList( 
+					Color.LIGHT_GRAY,
+					Color.GREEN,
+					Color.CYAN
+				)
+		);
+	
+		outText.setBackground(l.get((int)(Math.random() * (l.size() - 1))));
 
 		handleServerStateChange(serverConnector.isConnected());
 
